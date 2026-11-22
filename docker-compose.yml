@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: coremenu-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-coremenu_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-coremenu_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-coremenu}
+    volumes:
+      - coremenu_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-coremenu_user} -d ${POSTGRES_DB:-coremenu}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    image: ${COREMENU_IMAGE:-ghcr.io/gunnhil25/coremenu:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: coremenu-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${PORT:-3002}:3000"
+    volumes:
+      - coremenu_uploads:/app/data/uploads
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: "0.0.0.0"
+      DATABASE_URL: postgres://${POSTGRES_USER:-coremenu_user}:${POSTGRES_PASSWORD:-coremenu_secret}@db:5432/${POSTGRES_DB:-coremenu}
+      DB_MAX_CONNECTIONS: ${DB_MAX_CONNECTIONS:-10}
+      UPLOAD_DIR: /app/data/uploads
+      AUTH_SECRET: ${AUTH_SECRET:-change_me_auth_secret_key}
+      COOKIE_SECURE: ${COOKIE_SECURE:-}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3002}
+
+volumes:
+  coremenu_pgdata:
+  coremenu_uploads:

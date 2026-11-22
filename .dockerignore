@@ -1,0 +1,16 @@
+Dockerfile
+.dockerignore
+docker-compose.yml
+node_modules
+npm-debug.log
+README.md
+.next
+.git
+.github
+.env*
+!.env.example
+data/uploads
+src/__tests__
+e2e
+playwright.config.ts
+vitest.config.mts

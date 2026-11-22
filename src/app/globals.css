@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --background: 223 44% 97%;
+    --foreground: 229 30% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 229 30% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 229 30% 12%;
+    --primary: 246 92% 64%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 32% 94%;
+    --secondary-foreground: 229 30% 15%;
+    --muted: 225 32% 94%;
+    --muted-foreground: 222 15% 48%;
+    --accent: 230 35% 94%;
+    --accent-foreground: 229 30% 15%;
+    --destructive: 350 82% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 225 24% 89%;
+    --input: 225 24% 89%;
+    --ring: 246 92% 64%;
+    --radius: 0.875rem;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --background: 228 45% 9%;
+    --foreground: 225 38% 94%;
+    --card: 227 38% 13%;
+    --card-foreground: 225 38% 94%;
+    --popover: 227 38% 13%;
+    --popover-foreground: 225 38% 94%;
+    --primary: 246 100% 76%;
+    --primary-foreground: 228 45% 9%;
+    --secondary: 226 30% 18%;
+    --secondary-foreground: 225 38% 94%;
+    --muted: 226 30% 18%;
+    --muted-foreground: 222 20% 67%;
+    --accent: 226 30% 20%;
+    --accent-foreground: 225 38% 94%;
+    --destructive: 350 100% 72%;
+    --destructive-foreground: 228 45% 9%;
+    --border: 226 28% 21%;
+    --input: 226 28% 21%;
+    --ring: 246 100% 76%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-image:
+      radial-gradient(900px circle at 12% -10%, rgba(109, 93, 252, 0.09), transparent 55%),
+      radial-gradient(750px circle at 88% 0%, rgba(39, 198, 165, 0.08), transparent 52%);
+    background-attachment: fixed;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(900px circle at 12% -10%, rgba(143, 131, 255, 0.14), transparent 55%),
+      radial-gradient(750px circle at 88% 0%, rgba(52, 214, 180, 0.10), transparent 52%);
+  }
+}
+
+/* Custom scrollbar for dense tables & planners */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.4);
+}
+
+@keyframes cc-page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cc-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes cc-tab-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cc-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cc-animate-page {
+  animation: cc-page-in 0.22s ease-out both;
+}
+
+.cc-animate-tab {
+  animation: cc-tab-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.cc-animate-modal {
+  animation: cc-pop-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.cc-animate-overlay {
+  animation: cc-overlay-in 0.18s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc-animate-page,
+  .cc-animate-tab,
+  .cc-animate-modal,
+  .cc-animate-overlay,
+  [role="tabpanel"][data-state="active"] {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
