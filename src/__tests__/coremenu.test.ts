@@ -45,6 +45,7 @@ import { createRecipeAction, logRecipeCookedAction } from "@/actions/recipes";
 import { generateGroceryListFromPlanAction, completeGroceryListAction } from "@/actions/grocery";
 import type { RecipeRecord } from "@/lib/types";
 import { detectImageFormat, isSafeUploadFilename } from "@/lib/uploads";
+import { buildPostgresClientConfig } from "@/db";
 
 describe("CoreMenu Unit & Conversion Engine", () => {
   it("normalizes units and scales servings accurately", () => {
@@ -428,5 +429,34 @@ describe("CoreMenu Auth, Store & Server Actions Lifecycle", () => {
     expect(detectImageFormat(Buffer.from("not an image"))).toBeNull();
     expect(isSafeUploadFilename("abc-123.png")).toBe(true);
     expect(isSafeUploadFilename("../secret.png")).toBe(false);
+  });
+
+  it("builds structured Postgres config when POSTGRES_HOST is set so special password chars never trigger URIError", () => {
+    const specialPw = "p@ss%word#1/2?3";
+    const structured = buildPostgresClientConfig({
+      NODE_ENV: "production",
+      POSTGRES_HOST: "db",
+      POSTGRES_PORT: "5432",
+      POSTGRES_USER: "coremenu_user",
+      POSTGRES_PASSWORD: specialPw,
+      POSTGRES_DB: "coremenu",
+    });
+    expect(structured.mode).toBe("options");
+    if (structured.mode === "options") {
+      expect(structured.options.host).toBe("db");
+      expect(structured.options.port).toBe(5432);
+      expect(structured.options.username).toBe("coremenu_user");
+      expect(structured.options.password).toBe(specialPw);
+      expect(structured.options.database).toBe("coremenu");
+    }
+
+    const fallback = buildPostgresClientConfig({
+      NODE_ENV: "development",
+      DATABASE_URL: "postgres://u:p@localhost:5432/mydb",
+    });
+    expect(fallback.mode).toBe("url");
+    if (fallback.mode === "url") {
+      expect(fallback.url).toBe("postgres://u:p@localhost:5432/mydb");
+    }
   });
 });
