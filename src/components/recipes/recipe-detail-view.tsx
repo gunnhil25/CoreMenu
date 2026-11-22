@@ -48,7 +48,7 @@ import {
   formatQuantity,
   scaleQuantity,
 } from "@/lib/units";
-import { formatCurrency, formatDate, formatDuration, toIsoDate } from "@/lib/utils";
+import { formatCurrency, formatDate, formatDuration, generateId, toIsoDate } from "@/lib/utils";
 import {
   MEAL_SLOTS,
   type CookLogRecord,
@@ -196,7 +196,7 @@ export function RecipeDetailView({
         setRecipe(res.recipe);
         setCookLogs((prev) => [
           {
-            id: crypto.randomUUID(),
+            id: generateId(),
             recipeId: recipe.id,
             userId: null,
             cookedAt: new Date().toISOString(),

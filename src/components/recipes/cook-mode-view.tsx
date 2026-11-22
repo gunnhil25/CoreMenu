@@ -36,6 +36,7 @@ import {
   formatQuantity,
   scaleQuantity,
 } from "@/lib/units";
+import { generateId } from "@/lib/utils";
 import type { RecipeRecord, UnitSystem } from "@/lib/types";
 
 interface CookTimer {
@@ -161,7 +162,7 @@ export function CookModeView({
     setTimers((prev) => [
       ...prev,
       {
-        id: crypto.randomUUID(),
+        id: generateId(),
         label,
         totalSeconds: secs,
         remainingSeconds: secs,

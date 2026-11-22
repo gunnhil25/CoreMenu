@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createRecipeAction, updateRecipeAction } from "@/actions/recipes";
+import { generateId } from "@/lib/utils";
 import {
   AISLE_CATEGORIES,
   MEAL_TYPES,
@@ -38,7 +39,7 @@ interface RecipeFormProps {
 
 function emptyIngredient(): RecipeIngredient {
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     name: "",
     quantity: 1,
     unit: "unit",
@@ -52,7 +53,7 @@ function emptyIngredient(): RecipeIngredient {
 
 function emptyStep(): RecipeStep {
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     section: "",
     instruction: "",
     timerMinutes: null,
